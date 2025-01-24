@@ -1,11 +1,13 @@
 <template>
   <div>
-    <el-button type="primary" :icon="Edit">按钮</el-button>
+    <div>测试 scss 全局变量</div>
   </div>
 </template>
 
-<script setup lang="ts">
-import { Edit } from '@element-plus/icons-vue'
-</script>
+<script setup lang="ts"></script>
 
-<style scoped></style>
+<style scoped lang="scss">
+div {
+  color: $color;
+}
+</style>
