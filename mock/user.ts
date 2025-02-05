@@ -1,3 +1,5 @@
+import type { AxiosRequestConfig } from 'axios'
+import type { LoginParams } from './../src/api/user/type'
 //createUserList:次函数执行会返回一个数组,数组里面包含两个用户信息
 function createUserList() {
   return [
@@ -8,6 +10,7 @@ function createUserList() {
       username: 'admin',
       password: '111111',
       desc: '平台管理员',
+
       roles: ['平台管理员'],
       buttons: ['cuser.detail'],
       routes: ['home'],
@@ -35,7 +38,7 @@ export default [
   {
     url: '/api/user/login', //请求地址
     method: 'post', //请求方式
-    response: ({ body }) => {
+    response: ({ body }: { body: LoginParams }) => {
       //获取请求体携带过来的用户名与密码
       const { username, password } = body
       //调用获取用户信息函数,用于判断是否有此用户
@@ -55,9 +58,9 @@ export default [
   {
     url: '/api/user/info',
     method: 'get',
-    response: (request) => {
+    response: (request: AxiosRequestConfig) => {
       //获取请求头携带token
-      const token = request.headers.token
+      const token = request?.headers?.token ?? ''
       //查看用户信息是否包含有次token用户
       const checkUser = createUserList().find((item) => item.token === token)
       //没有返回失败的信息

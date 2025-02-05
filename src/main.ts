@@ -7,10 +7,12 @@ import App from './App.vue'
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 import 'virtual:svg-icons-register'
 import globalComponents from './components'
+import router from './router'
 
 const app = createApp(App)
 app.use(ElementPlus, {
   locale: zhCn,
 })
 app.use(globalComponents)
+app.use(router)
 app.mount('#app')

@@ -18,7 +18,7 @@ export default defineConfig(({ command }) => {
     ],
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, './src'), // 相对路径别名配置，使用 @ 代替
+        '@': path.resolve(__dirname, 'src'), // 相对路径别名配置，使用 @ 代替
       },
     },
     // scss 全局变量配置
