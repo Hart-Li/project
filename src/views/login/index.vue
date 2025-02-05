@@ -21,7 +21,14 @@
             ></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button class="login_btn" round>登录</el-button>
+            <el-button
+              :loading="loginBtnLoading"
+              class="login_btn"
+              @click="userLogin"
+              round
+            >
+              登录
+            </el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -30,10 +37,42 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
-import { User, Lock } from '@element-plus/icons-vue'
+import useUserStore from '@/store/modules/user'
+import { Lock, User } from '@element-plus/icons-vue'
+import { ElNotification } from 'element-plus'
+import { reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
+const userStore = useUserStore()
+const router = useRouter()
+
+let loginBtnLoading = ref(false)
 let loginForm = reactive({ username: 'admin', password: '111111' })
+function userLogin() {
+  loginBtnLoading.value = true
+  userStore
+    .userLogin({
+      username: loginForm.username,
+      password: loginForm.password,
+    })
+    .then(() => {
+      loginBtnLoading.value = false
+      router.push({ path: '/' })
+      ElNotification({
+        title: '登录成功',
+        message: '欢迎回来',
+        type: 'success',
+      })
+    })
+    .catch((error) => {
+      loginBtnLoading.value = false
+      ElNotification({
+        title: '登录失败',
+        message: error.message,
+        type: 'error',
+      })
+    })
+}
 </script>
 
 <style scoped lang="scss">
