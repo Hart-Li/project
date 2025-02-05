@@ -4,7 +4,18 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { onMounted } from 'vue'
+import { getUserInfo, login } from './api/user'
+onMounted(() => {
+  login({
+    username: 'admin',
+    password: '111111',
+  })
+  let res = getUserInfo()
+  console.log(res)
+})
+</script>
 
 <style scoped lang="scss">
 div {
