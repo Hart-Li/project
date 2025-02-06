@@ -38,6 +38,7 @@
 
 <script setup lang="ts">
 import useUserStore from '@/store/modules/user'
+import { getTimeIntervalStr } from '@/utils/time'
 import { Lock, User } from '@element-plus/icons-vue'
 import { ElNotification } from 'element-plus'
 import { reactive, ref } from 'vue'
@@ -58,8 +59,9 @@ function userLogin() {
     .then(() => {
       loginBtnLoading.value = false
       router.push({ path: '/' })
+      const timeIntervalStr = getTimeIntervalStr()
       ElNotification({
-        title: '登录成功',
+        title: 'HI, ' + timeIntervalStr,
         message: '欢迎回来',
         type: 'success',
       })
@@ -79,14 +81,15 @@ function userLogin() {
 .login_container {
   width: 100%;
   height: 100vh;
-  background: url('@/assets/images/code.png') no-repeat;
+  background: url('@/assets/images/background.jpg') no-repeat;
   background-size: cover;
   .login_form {
     position: relative;
     width: 80%;
     top: 30vh;
     padding: 40px;
-    background: rgba(207, 89, 38, 0.5);
+    background: url('@/assets/images/login_form.png') no-repeat;
+    background-size: cover;
 
     h1 {
       font-size: 40px;

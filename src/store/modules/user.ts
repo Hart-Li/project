@@ -1,23 +1,24 @@
-import type { LoginParams } from '@/api/user/type'
+import type { LoginParams, LoginResponse } from '@/api/user/type'
 // 创建用户仓库
 import { login } from '@/api/user'
+import { GET_TOKEN, SET_TOKEN } from '@/utils/token'
 import { defineStore } from 'pinia'
-const TOKEN_KEY = 'token'
+import type { UserState } from './types/type'
 const useUserStore = defineStore('User', {
-  state: () => {
+  state: (): UserState => {
     return {
       // 用户唯一标识
-      token: localStorage.getItem(TOKEN_KEY) || '',
+      token: GET_TOKEN(),
     }
   },
   actions: {
     async userLogin(data: LoginParams) {
-      const result = await login(data)
+      const result: LoginResponse = await login(data)
       if (result.code === 200) {
         // pinia 存储 token
-        this.token = result.data.token
+        this.token = result.data.token as string
         // 本地持久化存储 token
-        localStorage.setItem(TOKEN_KEY, result.data.token)
+        SET_TOKEN(result.data.token as string)
         // 保证当前的 async 返回一个成功的 Promise
         return 'ok'
       } else {
