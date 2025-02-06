@@ -2,3 +2,14 @@
 @use './reset.scss';
 
 // 设置 scss 全局变量
+// 滚动条的统一配置
+// ::-webkit-scrollbar {
+//   width: 10px;
+// }
+// ::-webkit-scrollbar-track {
+//   background: $base-menu-background;
+// }
+// ::-webkit-scrollbar-thumb {
+//   background: red;
+//   border-radius: 10px;
+// }

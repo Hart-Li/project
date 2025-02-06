@@ -4,11 +4,13 @@ import { login } from '@/api/user'
 import { GET_TOKEN, SET_TOKEN } from '@/utils/token'
 import { defineStore } from 'pinia'
 import type { UserState } from './types/type'
+import { constantRoute } from '@/router/route'
 const useUserStore = defineStore('User', {
   state: (): UserState => {
     return {
       // 用户唯一标识
       token: GET_TOKEN(),
+      menuRoutes: constantRoute,
     }
   },
   actions: {

@@ -57,7 +57,7 @@ const router = useRouter()
 const loginFormRef = ref()
 
 let loginBtnLoading = ref(false)
-let loginForm = reactive({ username: 'admi', password: '111111' })
+let loginForm = reactive({ username: 'admin', password: '111111' })
 function userLogin() {
   loginBtnLoading.value = true
   loginFormRef.value
@@ -96,7 +96,7 @@ function userLogin() {
       })
     })
 }
-const userValidator = (rule: any, value: any, callback: any) => {
+const userValidator = (_rule: any, value: any, callback: any) => {
   // 用户名正则校验规则
   const usernameReg = /^[a-zA-Z0-9]{5,15}$/
   if (!usernameReg.test(value)) {
@@ -105,7 +105,7 @@ const userValidator = (rule: any, value: any, callback: any) => {
     callback()
   }
 }
-const passwordValidator = (rule: any, value: any, callback: any) => {
+const passwordValidator = (_rule: any, value: any, callback: any) => {
   // 密码正则校验规则：密码必须由6-20位的英文、数字或特殊字符的组合
   const passwordReg = /^[a-zA-Z\d`~!@#$%^&*()-=_+,./\[\]{}<>?]{6,20}$/
   if (!passwordReg.test(value)) {
