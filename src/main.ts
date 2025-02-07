@@ -5,8 +5,10 @@ import { createApp } from 'vue'
 import App from './App.vue'
 //@ts-expect-error Element Plus 的中文语言包类型定义问题
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
+import 'nprogress/nprogress.css'
 import 'virtual:svg-icons-register'
 import globalComponents from './components'
+import './permission'
 import router from './router'
 import pinia from './store'
 

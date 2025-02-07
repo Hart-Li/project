@@ -50,10 +50,11 @@ import { getTimeIntervalStr } from '@/utils/time'
 import { Lock, User } from '@element-plus/icons-vue'
 import { ElNotification } from 'element-plus'
 import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 const userStore = useUserStore()
 const router = useRouter()
+const route = useRoute()
 const loginFormRef = ref()
 
 let loginBtnLoading = ref(false)
@@ -70,7 +71,7 @@ function userLogin() {
         })
         .then(() => {
           loginBtnLoading.value = false
-          router.push({ path: '/' })
+          router.push({ path: (route.query.redirect as string) || '/' })
           const timeIntervalStr = getTimeIntervalStr()
           ElNotification({
             title: 'HI, ' + timeIntervalStr,

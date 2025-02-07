@@ -27,7 +27,8 @@ interface UserInfoDataType {
   token: string
 }
 interface UserDataType {
-  checkUser: UserInfoDataType
+  checkUser?: UserInfoDataType
+  message?: string
 }
 export interface UserInfoResponse {
   code: number

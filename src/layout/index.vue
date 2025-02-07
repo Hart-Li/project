@@ -1,25 +1,30 @@
 <template>
   <div class="layout_container">
     <!-- 左侧菜单 -->
-    <div class="layout_slider">
+    <div class="layout_slider" :class="settingStore.isCollapse ? 'fold' : ''">
       <Logo />
       <!-- 展示菜单 -->
       <!-- 滚动组件 -->
       <el-scrollbar class="scrollbar">
         <!-- 菜单组件 -->
-        <el-menu background-color="$base-menu-background" text-color="#fff">
+        <el-menu
+          background-color="#001529"
+          text-color="#fff"
+          :collapse="settingStore.isCollapse"
+          :default-active="route.path"
+        >
           <!-- 根据路由静态生成菜单 -->
           <CustomMenu :menuList="userStore.menuRoutes" />
         </el-menu>
       </el-scrollbar>
     </div>
     <!-- 顶部导航 -->
-    <div class="layout_tabbar">456</div>
+    <div class="layout_tabbar" :class="settingStore.isCollapse ? 'fold' : ''">
+      <Tabbar />
+    </div>
     <!-- 主内容区 -->
-    <div class="layout_main">
-      <p style="background: red; height: 10000px; margin-left: 10px">
-        我是一个段落
-      </p>
+    <div class="layout_main" :class="settingStore.isCollapse ? 'fold' : ''">
+      <MainLayout />
     </div>
   </div>
 </template>
@@ -27,10 +32,21 @@
 <script setup lang="ts">
 import Logo from './logo/index.vue'
 import CustomMenu from './menu/index.vue'
+import MainLayout from './main/index.vue'
+import Tabbar from './tabbar/index.vue'
 
+import { useRoute } from 'vue-router'
 import useUserStore from '@/store/modules/user'
+import useSettingStore from '@/store/modules/setting'
 
+const route = useRoute()
 const userStore = useUserStore()
+const settingStore = useSettingStore()
+</script>
+<script lang="ts">
+export default {
+  name: 'Layout',
+}
 </script>
 
 <style scoped lang="scss">
@@ -42,9 +58,13 @@ const userStore = useUserStore()
     width: $base-menu-width;
     height: 100vh;
     background: $base-menu-background;
+    transition: all 0.3s;
     .scrollbar {
       width: 100%;
       height: calc(100vh - #{$base-tabbar-height});
+    }
+    &.fold {
+      width: $base-menu-fold-width;
     }
   }
   .layout_tabbar {
@@ -54,6 +74,11 @@ const userStore = useUserStore()
     background: $base-tabbar-background;
     top: 0;
     left: $base-menu-width;
+    transition: all 0.3s;
+    &.fold {
+      width: calc(100% - #{$base-menu-fold-width});
+      left: $base-menu-fold-width;
+    }
   }
   .layout_main {
     position: absolute;
@@ -63,6 +88,11 @@ const userStore = useUserStore()
     top: $base-tabbar-height;
     left: $base-menu-width;
     overflow: auto;
+    transition: all 0.3s;
+    &.fold {
+      width: calc(100% - #{$base-menu-fold-width});
+      left: $base-menu-fold-width;
+    }
   }
 }
 </style>

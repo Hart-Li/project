@@ -1,4 +1,5 @@
 // 进行 axios 的二次封装: 1. 统一处理请求异常 2. 统一处理请求 loading 3. 统一处理请求结果
+import useUserStore from '@/store/modules/user'
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
 // 第一步：利用 axios 对象的 create 方法创建一个新的 axios 实例(其他的配置：基础路径、超时时间等)
@@ -9,8 +10,12 @@ const request = axios.create({
 })
 // 第二步：request 实例添加请求拦截器
 request.interceptors.request.use((config) => {
+  const userStore = useUserStore()
   // config 配置对象,headers 属性请求头，经常给服务端携带公共参数
-  config.headers.token = 'Admin Token'
+  if (userStore.token) {
+    config.headers.token = userStore.token
+  }
+
   // 返回请求对象
   return config
 })

@@ -1,16 +1,22 @@
-import type { LoginParams, LoginResponse } from '@/api/user/type'
+import type {
+  LoginParams,
+  LoginResponse,
+  UserInfoResponse,
+} from '@/api/user/type'
 // 创建用户仓库
-import { login } from '@/api/user'
-import { GET_TOKEN, SET_TOKEN } from '@/utils/token'
+import { getUserInfo, login } from '@/api/user'
+import { constantRoute } from '@/router/route'
+import { GET_TOKEN, REMOVE_TOKEN, SET_TOKEN } from '@/utils/token'
 import { defineStore } from 'pinia'
 import type { UserState } from './types/type'
-import { constantRoute } from '@/router/route'
 const useUserStore = defineStore('User', {
   state: (): UserState => {
     return {
       // 用户唯一标识
       token: GET_TOKEN(),
       menuRoutes: constantRoute,
+      username: '',
+      avatar: '',
     }
   },
   actions: {
@@ -26,6 +32,23 @@ const useUserStore = defineStore('User', {
       } else {
         return Promise.reject(new Error(result.data.message))
       }
+    },
+    async getUserInfo() {
+      const result: UserInfoResponse = await getUserInfo()
+      console.log(result)
+      if (result.code === 200) {
+        this.username = result.data.checkUser?.username || ''
+        this.avatar = result.data.checkUser?.avatar || ''
+      } else {
+        return Promise.reject(new Error(result.data.message))
+      }
+    },
+    async userLogout() {
+      this.token = ''
+      this.username = ''
+      this.avatar = ''
+      // 删除本地存储的 token
+      REMOVE_TOKEN()
     },
   },
   getters: {},
