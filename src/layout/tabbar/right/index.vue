@@ -17,9 +17,9 @@
 </template>
 
 <script setup lang="ts">
+import router from '@/router'
 import useSettingStore from '@/store/modules/setting'
 import useUserStore from '@/store/modules/user'
-import router from '@/router'
 
 const settingStore = useSettingStore()
 const userStore = useUserStore()
@@ -41,10 +41,10 @@ const changeFullScreen = () => {
     document.documentElement.requestFullscreen()
   }
 }
-const logout = () => {
+const logout = async () => {
   // 1.发送退出登录的请求
   // 2.清空仓库的数据
-  userStore.userLogout()
+  await userStore.userLogout()
   // 3.跳转到登录页
   router.push({
     path: '/login',

@@ -1,36 +1,23 @@
-// 登录接口参数类型
 export interface LoginParams {
   username: string
   password: string
 }
 
-interface DataType {
-  token?: string
-  message?: string
-}
-
-export interface LoginResponse {
+export interface ResponseData<T = any> {
   code: number
-  data: DataType
+  data: T
+  message: string
+  ok: boolean
 }
 
-// 用户信息接口相关数据类型
-interface UserInfoDataType {
-  userId: number
-  avatar: string
-  username: string
-  password: string
-  desc: string
-  roles: string[]
-  buttons: string[]
-  routes: string[]
+export interface LoginResponseData {
   token: string
 }
-interface UserDataType {
-  checkUser?: UserInfoDataType
-  message?: string
-}
-export interface UserInfoResponse {
-  code: number
-  data: UserDataType
+
+export interface UserInfoResponseData {
+  routes: string[]
+  buttons: string[]
+  roles: string[]
+  name: string
+  avatar: string
 }

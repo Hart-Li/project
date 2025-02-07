@@ -1,10 +1,11 @@
-import type {
-  LoginParams,
-  LoginResponse,
-  UserInfoResponse,
-} from '@/api/user/type'
 // 创建用户仓库
-import { getUserInfo, login } from '@/api/user'
+import { getUserInfo, login, logout } from '@/api/user'
+import {
+  LoginParams,
+  LoginResponseData,
+  ResponseData,
+  UserInfoResponseData,
+} from '@/api/user/type'
 import { constantRoute } from '@/router/route'
 import { GET_TOKEN, REMOVE_TOKEN, SET_TOKEN } from '@/utils/token'
 import { defineStore } from 'pinia'
@@ -21,8 +22,9 @@ const useUserStore = defineStore('User', {
   },
   actions: {
     async userLogin(data: LoginParams) {
-      const result: LoginResponse = await login(data)
-      if (result.code === 200) {
+      const result: ResponseData<LoginResponseData> = await login(data)
+
+      if (result.code === 20000) {
         // pinia 存储 token
         this.token = result.data.token as string
         // 本地持久化存储 token
@@ -30,20 +32,29 @@ const useUserStore = defineStore('User', {
         // 保证当前的 async 返回一个成功的 Promise
         return 'ok'
       } else {
-        return Promise.reject(new Error(result.data.message))
+        return Promise.reject(new Error(result.message))
       }
     },
     async getUserInfo() {
-      const result: UserInfoResponse = await getUserInfo()
-      console.log(result)
-      if (result.code === 200) {
-        this.username = result.data.checkUser?.username || ''
-        this.avatar = result.data.checkUser?.avatar || ''
+      const result: ResponseData<UserInfoResponseData> = await getUserInfo()
+      if (result.code === 20000) {
+        this.username = result.data.name || ''
+        this.avatar = result.data.avatar || ''
+        return 'ok'
       } else {
-        return Promise.reject(new Error(result.data.message))
+        return Promise.reject(new Error(result.message))
       }
     },
     async userLogout() {
+      const result: ResponseData = await logout()
+      if (result.code === 20000) {
+        this.resetUser()
+        return 'ok'
+      } else {
+        return Promise.reject(new Error(result.message))
+      }
+    },
+    resetUser() {
       this.token = ''
       this.username = ''
       this.avatar = ''

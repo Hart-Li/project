@@ -50,7 +50,7 @@ import { getTimeIntervalStr } from '@/utils/time'
 import { Lock, User } from '@element-plus/icons-vue'
 import { ElNotification } from 'element-plus'
 import { reactive, ref } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const userStore = useUserStore()
 const router = useRouter()

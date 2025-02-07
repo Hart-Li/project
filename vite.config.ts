@@ -1,10 +1,11 @@
 import vue from '@vitejs/plugin-vue'
 import path from 'path'
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import { viteMockServe } from 'vite-plugin-mock'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 // https://vite.dev/config/
-export default defineConfig(({ command }) => {
+export default defineConfig(({ command, mode }) => {
+  const env = loadEnv(mode, process.cwd())
   return {
     plugins: [
       vue(),
@@ -26,6 +27,16 @@ export default defineConfig(({ command }) => {
       preprocessorOptions: {
         scss: {
           additionalData: '@use "@/styles/variable.scss" as *;',
+        },
+      },
+    },
+    server: {
+      // 设置服务器代理
+      proxy: {
+        [env.VITE_APP_BASE_API]: {
+          target: env.VITE_SERVE,
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, ''),
         },
       },
     },

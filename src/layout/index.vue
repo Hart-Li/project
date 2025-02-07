@@ -31,13 +31,13 @@
 
 <script setup lang="ts">
 import Logo from './logo/index.vue'
-import CustomMenu from './menu/index.vue'
 import MainLayout from './main/index.vue'
+import CustomMenu from './menu/index.vue'
 import Tabbar from './tabbar/index.vue'
 
-import { useRoute } from 'vue-router'
-import useUserStore from '@/store/modules/user'
 import useSettingStore from '@/store/modules/setting'
+import useUserStore from '@/store/modules/user'
+import { useRoute } from 'vue-router'
 
 const route = useRoute()
 const userStore = useUserStore()

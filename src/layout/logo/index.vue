@@ -29,6 +29,7 @@ export default {
   p {
     font-size: $base-menu-logo-title-font-size;
     margin-left: 10px;
+    white-space: nowrap;
   }
 }
 </style>
