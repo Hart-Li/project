@@ -1,11 +1,7 @@
 // 统一管理用户相关的接口
 import request from '@/utils/request'
-import {
-  LoginParams,
-  LoginResponseData,
-  ResponseData,
-  UserInfoResponseData,
-} from './type'
+import { ResponseData } from '../type'
+import { LoginParams, LoginResponseData, UserInfoResponseData } from './type'
 enum API {
   LOGIN_URL = '/admin/acl/index/login', // 登录
   USERINFO_URL = '/admin/acl/index/info', // 获取用户信息

@@ -1,9 +1,9 @@
 // 创建用户仓库
+import { ResponseData, USER_SUCCESS_CODE } from '@/api/type'
 import { getUserInfo, login, logout } from '@/api/user'
 import {
   LoginParams,
   LoginResponseData,
-  ResponseData,
   UserInfoResponseData,
 } from '@/api/user/type'
 import { constantRoute } from '@/router/route'
@@ -24,7 +24,7 @@ const useUserStore = defineStore('User', {
     async userLogin(data: LoginParams) {
       const result: ResponseData<LoginResponseData> = await login(data)
 
-      if (result.code === 20000) {
+      if (result.code === USER_SUCCESS_CODE) {
         // pinia 存储 token
         this.token = result.data.token as string
         // 本地持久化存储 token
@@ -37,7 +37,7 @@ const useUserStore = defineStore('User', {
     },
     async getUserInfo() {
       const result: ResponseData<UserInfoResponseData> = await getUserInfo()
-      if (result.code === 20000) {
+      if (result.code === USER_SUCCESS_CODE) {
         this.username = result.data.name || ''
         this.avatar = result.data.avatar || ''
         return 'ok'
@@ -47,7 +47,7 @@ const useUserStore = defineStore('User', {
     },
     async userLogout() {
       const result: ResponseData = await logout()
-      if (result.code === 20000) {
+      if (result.code === USER_SUCCESS_CODE) {
         this.resetUser()
         return 'ok'
       } else {
