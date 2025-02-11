@@ -189,7 +189,7 @@ const closeDialog = () => {
   Object.assign(addOrUpdateTradeMarkFormData, getInitFormData())
 }
 
-const tmNameValidator = (rule: any, value: string, callback: any) => {
+const tmNameValidator = (_rule: any, value: string, callback: any) => {
   if (value.trim().length < 2) {
     callback(new Error('品牌名称长度必须大于等于2'))
   } else {
@@ -197,7 +197,7 @@ const tmNameValidator = (rule: any, value: string, callback: any) => {
   }
 }
 
-const logoUrlValidator = (rule: any, value: string, callback: any) => {
+const logoUrlValidator = (_rule: any, value: string, callback: any) => {
   if (!value || value.length === 0) {
     callback(new Error('请上传品牌LOGO'))
   } else {
