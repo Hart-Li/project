@@ -39,7 +39,16 @@
             >
               编辑
             </el-button>
-            <el-button type="danger" size="small" icon="Delete">删除</el-button>
+            <el-popconfirm
+              :title="`你确定要删除${scope.row.tmName}吗？`"
+              @confirm="confirmDelete(scope.row.id)"
+            >
+              <template #reference>
+                <el-button type="danger" size="small" icon="Delete">
+                  删除
+                </el-button>
+              </template>
+            </el-popconfirm>
           </template>
         </el-table-column>
       </el-table>
@@ -59,19 +68,21 @@
     <el-dialog
       v-model="dialogVisible"
       :title="addOrUpdateTradeMarkFormData.id ? '修改品牌' : '添加品牌'"
+      @close="closeDialog"
     >
       <el-form
         style="width: 80%"
         ref="addOrUpdateTradeMarkFormDataRef"
         :model="addOrUpdateTradeMarkFormData"
+        :rules="rules"
       >
-        <el-form-item label="品牌名称" label-width="100px">
+        <el-form-item label="品牌名称" prop="tmName" label-width="100px">
           <el-input
             placeholder="请输入品牌名称"
             v-model="addOrUpdateTradeMarkFormData.tmName"
           ></el-input>
         </el-form-item>
-        <el-form-item label="品牌LOGO" label-width="100px ">
+        <el-form-item label="品牌LOGO" label-width="100px" prop="logoUrl">
           <!-- 上传接口必须添加 api 否则不会进行路由转发 -->
           <el-upload
             class="avatar-uploader"
@@ -98,7 +109,11 @@
 </template>
 
 <script setup lang="ts">
-import { addOrUpdateTradeMark, getTrademarkList } from '@/api/product/trademark'
+import {
+  addOrUpdateTradeMark,
+  getTrademarkList,
+  removeTradeMark,
+} from '@/api/product/trademark'
 import { TradeMark, TradeMarkData } from '@/api/product/trademark/type'
 import { ResponseData, SUCCESS_CODE } from '@/api/type'
 import { ElMessage, FormInstance, UploadRawFile } from 'element-plus'
@@ -114,7 +129,6 @@ const getTrademarkListData = async () => {
     currentPage.value,
     limit.value,
   )
-  console.log(res)
   total.value = res.data.total
   tableData.value = res.data.records
 }
@@ -130,13 +144,28 @@ const handleCurrentChange = (val: number) => {
 }
 
 const showAddTradeMarkDialog = () => {
-  Object.assign(addOrUpdateTradeMarkFormData, getInitFormData())
   dialogVisible.value = true
 }
 
 const showUpdateTradeMarkDialog = (row: TradeMark) => {
   dialogVisible.value = true
   Object.assign(addOrUpdateTradeMarkFormData, row)
+}
+
+const confirmDelete = async (id: number) => {
+  const resp: ResponseData = await removeTradeMark(id)
+  if (resp.code === SUCCESS_CODE) {
+    ElMessage({
+      type: 'success',
+      message: '删除成功',
+    })
+    getTrademarkListData()
+  } else {
+    ElMessage({
+      type: 'error',
+      message: '删除失败',
+    })
+  }
 }
 
 onMounted(() => {
@@ -155,8 +184,35 @@ let dialogVisible = ref(false)
 let addOrUpdateTradeMarkFormDataRef = ref<FormInstance>()
 let addOrUpdateTradeMarkFormData = reactive(getInitFormData())
 
+const closeDialog = () => {
+  addOrUpdateTradeMarkFormDataRef.value?.resetFields()
+  Object.assign(addOrUpdateTradeMarkFormData, getInitFormData())
+}
+
+const tmNameValidator = (rule: any, value: string, callback: any) => {
+  if (value.trim().length < 2) {
+    callback(new Error('品牌名称长度必须大于等于2'))
+  } else {
+    callback()
+  }
+}
+
+const logoUrlValidator = (rule: any, value: string, callback: any) => {
+  if (!value || value.length === 0) {
+    callback(new Error('请上传品牌LOGO'))
+  } else {
+    callback()
+  }
+}
+
+const rules = {
+  tmName: [{ required: true, validator: tmNameValidator, trigger: 'change' }],
+  logoUrl: [{ required: true, validator: logoUrlValidator, trigger: 'blur' }],
+}
+
 const handleAvatarSuccess = (res: ResponseData) => {
   addOrUpdateTradeMarkFormData.logoUrl = res.data
+  addOrUpdateTradeMarkFormDataRef.value?.validateField('logoUrl')
 }
 
 const beforeAvatarUpload = (rawFile: UploadRawFile) => {
@@ -190,23 +246,34 @@ const cancel = () => {
 }
 
 const confirm = async () => {
-  const resp: ResponseData = await addOrUpdateTradeMark(
-    addOrUpdateTradeMarkFormData,
-  )
+  await addOrUpdateTradeMarkFormDataRef.value
+    ?.validate()
+    .then(async () => {
+      const resp: ResponseData = await addOrUpdateTradeMark(
+        addOrUpdateTradeMarkFormData,
+      )
 
-  if (resp.code === SUCCESS_CODE) {
-    ElMessage({
-      type: 'success',
-      message: addOrUpdateTradeMarkFormData.id ? '修改成功' : '添加成功',
+      if (resp.code === SUCCESS_CODE) {
+        ElMessage({
+          type: 'success',
+          message: addOrUpdateTradeMarkFormData.id ? '修改成功' : '添加成功',
+        })
+        dialogVisible.value = false
+        getTrademarkListData()
+      } else {
+        ElMessage({
+          type: 'error',
+          message: addOrUpdateTradeMarkFormData.id ? '修改失败' : '添加失败',
+        })
+      }
     })
-    dialogVisible.value = false
-    getTrademarkListData()
-  } else {
-    ElMessage({
-      type: 'error',
-      message: addOrUpdateTradeMarkFormData.id ? '修改失败' : '添加失败',
+    .catch((err) => {
+      console.log(err)
+      ElMessage({
+        type: 'error',
+        message: '请检查表单的错误信息并修正',
+      })
     })
-  }
 }
 </script>
 

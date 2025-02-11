@@ -8,6 +8,7 @@ enum API {
   TRADEMARK_URL = '/admin/product/baseTrademark',
   ADD_TRADEMARK_URL = '/admin/product/baseTrademark/save',
   UPDATE_TRADEMARK_URL = '/admin/product/baseTrademark/update',
+  DELETE_TRADEMARK_URL = '/admin/product/baseTrademark/remove',
 }
 
 export const getTrademarkList = (page: number, limit: number) =>
@@ -22,3 +23,6 @@ export const addOrUpdateTradeMark = (data: TradeMark) => {
     return request.post<any, ResponseData>(API.ADD_TRADEMARK_URL, data)
   }
 }
+
+export const removeTradeMark = (id: number) =>
+  request.delete<any, ResponseData>(`${API.DELETE_TRADEMARK_URL}/${id}`)
