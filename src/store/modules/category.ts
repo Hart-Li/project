@@ -37,7 +37,7 @@ const useCategoryStore = defineStore('category', {
     },
     async getCategory2List() {
       const result: ResponseData<CategoryData[]> = await getCategory2List(
-        this.c1Id,
+        this.c1Id!,
       )
       if (result.code === SUCCESS_CODE) {
         this.c2Arr = result.data
@@ -48,7 +48,7 @@ const useCategoryStore = defineStore('category', {
     },
     async getCategory3List() {
       const result: ResponseData<CategoryData[]> = await getCategory3List(
-        this.c2Id,
+        this.c2Id!,
       )
       if (result.code === SUCCESS_CODE) {
         this.c3Arr = result.data

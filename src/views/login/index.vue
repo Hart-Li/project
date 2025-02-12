@@ -8,7 +8,6 @@
           ref="loginFormRef"
           :model="loginForm"
           :rules="rules"
-          label-width="auto"
           status-icon
         >
           <h1>Hello</h1>

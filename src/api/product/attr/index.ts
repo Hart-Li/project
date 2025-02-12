@@ -7,6 +7,8 @@ enum API {
   GET_CATEGORY2_LIST_URL = '/admin/product/getCategory2',
   GET_CATEGORY3_LIST_URL = '/admin/product/getCategory3',
   GET_ATTR_INFO_LIST_URL = '/admin/product/attrInfoList',
+  SAVE_ATTR_INFO_URL = '/admin/product/saveAttrInfo',
+  DELETE_ATTR_INFO_URL = '/admin/product/deleteAttr',
 }
 
 export const getCategory1List = () =>
@@ -30,3 +32,9 @@ export const getAttrInfoList = (
   request.get<any, ResponseData<ProductAttrData[]>>(
     `${API.GET_ATTR_INFO_LIST_URL}/${category1Id}/${category2Id}/${category3Id}`,
   )
+
+export const saveAttrInfo = (data: ProductAttrData) =>
+  request.post<any, ResponseData>(API.SAVE_ATTR_INFO_URL, data)
+
+export const deleteAttrInfo = (attrId: number) =>
+  request.delete<any, ResponseData>(`${API.DELETE_ATTR_INFO_URL}/${attrId}`)

@@ -22,15 +22,14 @@
 </template>
 
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
 import useSettingStore from '@/store/modules/setting'
+import { useRoute } from 'vue-router'
 
 const route = useRoute()
 const settingStore = useSettingStore()
 
 const changeCollapse = () => {
   settingStore.isCollapse = !settingStore.isCollapse
-  console.log(route.matched)
 }
 </script>
 <script lang="ts">

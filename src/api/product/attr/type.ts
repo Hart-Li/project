@@ -6,15 +6,16 @@ export interface CategoryData {
 }
 
 export interface ProductAttrValue {
-  id: number
+  id: number | undefined
   valueName: string
-  attrId: number
+  attrId: number | undefined
+  isEdit: boolean
 }
 
 export interface ProductAttrData {
-  id: number
+  id?: number | undefined
   attrName: string
-  categoryId: number
-  categoryLevel: number
+  categoryId: number | undefined
+  categoryLevel: number | undefined
   attrValueList: ProductAttrValue[]
 }

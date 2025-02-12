@@ -216,7 +216,6 @@ const handleAvatarSuccess = (res: ResponseData) => {
 }
 
 const beforeAvatarUpload = (rawFile: UploadRawFile) => {
-  console.log(rawFile)
   // 上传文件前对文件的类型和大小做限制
   if (
     rawFile.type === 'image/png' ||
@@ -267,8 +266,7 @@ const confirm = async () => {
         })
       }
     })
-    .catch((err) => {
-      console.log(err)
+    .catch(() => {
       ElMessage({
         type: 'error',
         message: '请检查表单的错误信息并修正',
