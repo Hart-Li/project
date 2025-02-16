@@ -3,11 +3,17 @@ import request from '@/utils/request'
 import type { CategoryData, ProductAttrData } from './type'
 
 enum API {
+  // 获取一级分类列表
   GET_CATEGORY1_LIST_URL = '/admin/product/getCategory1',
+  // 获取二级分类列表
   GET_CATEGORY2_LIST_URL = '/admin/product/getCategory2',
+  // 获取三级分类列表
   GET_CATEGORY3_LIST_URL = '/admin/product/getCategory3',
+  // 获取属性列表
   GET_ATTR_INFO_LIST_URL = '/admin/product/attrInfoList',
+  // 保存或修改属性信息
   SAVE_ATTR_INFO_URL = '/admin/product/saveAttrInfo',
+  // 删除属性信息
   DELETE_ATTR_INFO_URL = '/admin/product/deleteAttr',
 }
 

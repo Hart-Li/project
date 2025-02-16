@@ -17,5 +17,6 @@ export interface ProductAttrData {
   attrName: string
   categoryId: number | undefined
   categoryLevel: number | undefined
+  valueId?: number
   attrValueList: ProductAttrValue[]
 }
