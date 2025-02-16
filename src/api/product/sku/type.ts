@@ -42,3 +42,12 @@ export interface SaveOrUpdateSkuData {
   tmId?: number
   weight: string
 }
+
+export interface SkuListData {
+  records: SaveOrUpdateSkuData[]
+  total: number
+  size: number
+  current: number
+  searchCount: boolean
+  pages: number
+}
