@@ -1,3 +1,5 @@
+import { RoleData } from '../role/type'
+
 export interface UserData {
   id: string
   gmtCreate?: string
@@ -14,4 +16,14 @@ export interface UserData {
 export interface UserListData {
   total: number
   items: UserData[]
+}
+
+export interface AssignRoleListData {
+  assignRoles: RoleData[]
+  allRolesList: RoleData[]
+}
+
+export interface AssignUserRolesParams {
+  roleIdList: string[]
+  userId: string
 }

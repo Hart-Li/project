@@ -25,7 +25,7 @@
       </el-form>
     </el-card>
     <el-card shadow="always">
-      <el-button type="primary" size="default" @click="handleShowAddDrawer">
+      <el-button type="primary" @click="handleShowAddDrawer">
         添加用户
       </el-button>
       <el-table :data="userDatas" border stripe style="margin-top: 10px">
@@ -69,7 +69,7 @@
             <el-button
               type="success"
               size="small"
-              @click="handleShowAssignRolesDrawer"
+              @click="handleShowAssignRolesDrawer(scope.row)"
             >
               分配角色
             </el-button>
@@ -104,15 +104,11 @@
     <el-drawer
       v-model="addOrUpdateUserDrawerVisible"
       :title="saveOrUpdateUserData.id ? '编辑用户' : '添加用户'"
-      size="30%"
       :before-close="closeAddOrUpdateUserDrawer"
       :destroy-on-close="true"
       :show-close="true"
       :wrapperClosable="true"
     >
-      <template #header>
-        <h1>{{ saveOrUpdateUserData.id ? '编辑用户' : '添加用户' }}</h1>
-      </template>
       <el-form
         :model="saveOrUpdateUserData"
         ref="saveOrUpdateUserFormRef"
@@ -152,16 +148,62 @@
         <el-button type="primary" @click="saveOrUpdateUser">确 定</el-button>
       </template>
     </el-drawer>
+    <el-drawer
+      v-model="assignRolesDrawerVisible"
+      title="分配用户角色"
+      :before-close="handleAssignRolesDrawerClose"
+      :destroy-on-close="true"
+      :show-close="true"
+      :wrapperClosable="true"
+    >
+      <el-form ref="assignUserRolesFormRef">
+        <el-form-item label="用户名">
+          <el-input
+            v-model="saveOrUpdateUserData.username"
+            :disabled="true"
+            clearable
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="角色选择">
+          <el-checkbox
+            v-model="selectAllRoles"
+            :indeterminate="selectPartRoles"
+            @change="handleSelectAllRolesChange"
+          >
+            全选
+          </el-checkbox>
+          <el-checkbox-group
+            v-model="assignRoles"
+            @change="handleSelectAssignRolesChange"
+          >
+            <el-checkbox
+              v-for="item in allRolesList"
+              :key="item.id"
+              :value="item"
+            >
+              {{ item.roleName }}
+            </el-checkbox>
+          </el-checkbox-group>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="handleAssignRolesDrawerClose">取 消</el-button>
+        <el-button type="primary" @click="assignUserRoles">确 定</el-button>
+      </template>
+    </el-drawer>
   </div>
 </template>
 
 <script setup lang="ts">
+import { RoleData } from '@/api/acl/role/type'
 import {
   deleteUser,
   getUserListByPage,
+  reqAssignUserRoles,
+  reqGetUserAssignRoles,
   reqSaveOrUpdateUser,
 } from '@/api/acl/user'
-import { UserData, UserListData } from '@/api/acl/user/type'
+import { AssignRoleListData, UserData, UserListData } from '@/api/acl/user/type'
 import { ResponseData, USER_SUCCESS_CODE } from '@/api/type'
 import useUserStore from '@/store/modules/user'
 import { nickNameValidator, userValidator } from '@/utils/user'
@@ -302,8 +344,68 @@ const closeAddOrUpdateUserDrawer = () => {
   addOrUpdateUserDrawerVisible.value = false
 }
 
-const handleShowAssignRolesDrawer = () => {
-  console.log('handleShowAssignRolesDrawer')
+let assignRolesDrawerVisible = ref(false)
+let assignRoles = ref<RoleData[]>([])
+let allRolesList = ref<RoleData[]>([])
+
+const selectAllRoles = computed(() => {
+  return assignRoles.value.length === allRolesList.value.length
+})
+
+const selectPartRoles = computed(() => {
+  return (
+    assignRoles.value.length > 0 &&
+    assignRoles.value.length < allRolesList.value.length
+  )
+})
+
+const handleSelectAllRolesChange = (val: boolean) => {
+  console.log(val)
+  if (val) {
+    assignRoles.value = _.cloneDeep(allRolesList.value)
+  } else {
+    assignRoles.value = []
+  }
+}
+
+const getUserAssignRoles = async (userId: string) => {
+  let result: ResponseData<AssignRoleListData> =
+    await reqGetUserAssignRoles(userId)
+  if (result.code === USER_SUCCESS_CODE) {
+    assignRoles.value = result.data.assignRoles
+    allRolesList.value = result.data.allRolesList
+  } else {
+    ElMessage.error('获取用户角色失败')
+  }
+}
+
+const handleSelectAssignRolesChange = (val: RoleData[]) => {
+  assignRoles.value = val
+}
+
+const handleShowAssignRolesDrawer = (row: UserData) => {
+  saveOrUpdateUserData.value = _.cloneDeep(row)
+  getUserAssignRoles(row.id)
+  assignRolesDrawerVisible.value = true
+}
+
+const handleAssignRolesDrawerClose = () => {
+  assignRolesDrawerVisible.value = false
+}
+
+const assignUserRoles = async () => {
+  let newRoleIds = assignRoles.value.map((item) => item.id)
+  let result: ResponseData = await reqAssignUserRoles({
+    userId: saveOrUpdateUserData.value.id,
+    roleIdList: newRoleIds,
+  })
+  if (result.code === USER_SUCCESS_CODE) {
+    ElMessage.success('分配用户角色成功')
+    handleAssignRolesDrawerClose()
+    queryUsers()
+  } else {
+    ElMessage.error('分配用户角色失败')
+  }
 }
 </script>
 
