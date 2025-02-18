@@ -40,6 +40,7 @@ const useUserStore = defineStore('User', {
       if (result.code === USER_SUCCESS_CODE) {
         this.username = result.data.name || ''
         this.avatar = result.data.avatar || ''
+
         return 'ok'
       } else {
         return Promise.reject(new Error(result.message))

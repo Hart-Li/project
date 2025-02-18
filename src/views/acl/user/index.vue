@@ -28,7 +28,17 @@
       <el-button type="primary" @click="handleShowAddDrawer">
         添加用户
       </el-button>
-      <el-table :data="userDatas" border stripe style="margin-top: 10px">
+      <el-button type="danger" @click="handleBatchDeleteUser">
+        批量删除
+      </el-button>
+
+      <el-table
+        :data="userDatas"
+        border
+        stripe
+        style="margin-top: 10px"
+        @selection-change="handleSelectUserChange"
+      >
         <el-table-column type="selection" width="80px"></el-table-column>
         <el-table-column
           type="index"
@@ -200,6 +210,7 @@ import {
   deleteUser,
   getUserListByPage,
   reqAssignUserRoles,
+  reqBatchDeleteUser,
   reqGetUserAssignRoles,
   reqSaveOrUpdateUser,
 } from '@/api/acl/user'
@@ -306,10 +317,32 @@ const handleShowAddDrawer = () => {
   addOrUpdateUserDrawerVisible.value = true
 }
 
+let selectedUserDatas = ref<UserData[]>([])
+const handleSelectUserChange = (val: UserData[]) => {
+  selectedUserDatas.value = val
+}
+
+const handleBatchDeleteUser = async () => {
+  const selectedUserIds = selectedUserDatas.value.map((item) => item.id)
+  if (!selectedUserIds || selectedUserIds.length === 0) {
+    ElMessage.error('请选择要删除的用户')
+    return
+  }
+  const result: ResponseData = await reqBatchDeleteUser(selectedUserIds)
+  if (result.code === USER_SUCCESS_CODE) {
+    ElMessage.success('批量删除用户成功')
+    queryUsers()
+  } else {
+    ElMessage.error('批量删除用户失败')
+  }
+}
+
 const handleShowEditDrawer = (row: UserData) => {
   saveOrUpdateUserData.value = _.cloneDeep(row)
   addOrUpdateUserDrawerVisible.value = true
+  beforeChangeUsername.value = row.username
 }
+let beforeChangeUsername = ref('')
 
 const saveOrUpdateUser = () => {
   saveOrUpdateUserFormRef.value.validate(async (valid: boolean) => {
@@ -328,7 +361,11 @@ const saveOrUpdateUser = () => {
           saveOrUpdateUserData.value.id ? '更新用户成功' : '添加用户成功',
         )
         closeAddOrUpdateUserDrawer()
-        document.location.reload()
+        if (beforeChangeUsername.value === userStore.username) {
+          document.location.reload()
+        } else {
+          queryUsers()
+        }
       } else {
         ElMessage.error(
           saveOrUpdateUserData.value.id ? '更新用户失败' : '添加用户失败',

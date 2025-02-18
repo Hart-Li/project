@@ -20,6 +20,8 @@ enum API {
   GET_USER_ASSIGN_ROLES_URL = '/admin/acl/user/toAssign',
   // 分配用户角色
   ASSIGN_USER_ROLES_URL = '/admin/acl/user/doAssignRole',
+  // 批量删除用户
+  BATCH_DELETE_USER_URL = '/admin/acl/user/batchRemove',
 }
 
 export const getUserListByPage = (
@@ -51,3 +53,8 @@ export const reqAssignUserRoles = (data: AssignUserRolesParams) =>
     API.ASSIGN_USER_ROLES_URL,
     data,
   )
+
+export const reqBatchDeleteUser = (idList: string[]) =>
+  request.delete<any, ResponseData>(API.BATCH_DELETE_USER_URL, {
+    data: idList,
+  })
