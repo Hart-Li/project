@@ -73,6 +73,7 @@
         layout="prev, pager, next, jumper, -> , sizes, total"
         :total="totalNum"
         background
+        style="margin: 10px 0"
       >
         :pager-count="7">
       </el-pagination>
@@ -108,13 +109,43 @@
       :destroy-on-close="true"
       :show-close="true"
       :wrapperClosable="true"
-    ></el-drawer>
+    >
+      <el-form>
+        <el-form-item label="角色名称">
+          <el-input
+            v-model="saveOrUpdateRoleData.roleName"
+            clearable
+            :disabled="true"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="分配角色">
+          <el-tree
+            :data="allPermissions"
+            show-checkbox
+            node-key="id"
+            default-expand-all
+            :default-checked-keys="selectedPermissionIds"
+            :props="selectPermissionProps"
+            ref="assignRolePermissionTreeRef"
+          ></el-tree>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="handleAssignRolePermissions">
+            保存
+          </el-button>
+          <el-button @click="assignRolePermissionDrawerVisible = false">
+            取消
+          </el-button>
+        </el-form-item>
+      </el-form>
+    </el-drawer>
   </div>
 </template>
 
 <script setup lang="ts">
 import { PermissionData } from '@/api/acl/permission/type'
 import {
+  reqAssignRolePermissions,
   reqDeleteRole,
   reqGetRolePermissions,
   reqGetRolesByPage,
@@ -243,24 +274,59 @@ const saveOrUpdateRole = async () => {
 }
 
 let assignRolePermissionDrawerVisible = ref<boolean>(false)
+let assignRolePermissionTreeRef = ref()
 let allPermissions = ref<PermissionData[]>([])
 let selectedPermissionIds = ref<string[]>([])
+const selectPermissionProps = {
+  children: 'children',
+  label: 'name',
+}
+
+const getSelectedLeafPermissionIds = (permissions: PermissionData[]) => {
+  const selectedLeafPermissionIds: string[] = []
+  permissions.forEach((item) => {
+    if (item.select && (!item.children || item.children.length == 0)) {
+      selectedLeafPermissionIds.push(item.id)
+    }
+    if (item.children && item.children.length > 0) {
+      selectedLeafPermissionIds.push(
+        ...getSelectedLeafPermissionIds(item.children),
+      )
+    }
+  })
+  return selectedLeafPermissionIds
+}
 
 const showAssignRolePermissionDrawer = async (row: RoleData) => {
-  assignRolePermissionDrawerVisible.value = true
+  saveOrUpdateRoleData.value = row
   // 获取角色权限
   const result: ResponseData<RolePermissionsData> = await reqGetRolePermissions(
     row.id!,
   )
   if (result.code === USER_SUCCESS_CODE) {
     allPermissions.value = result.data.children
-    selectedPermissionIds.value = result.data.children
-      .filter(
-        (item) => item.select && item.children && item.children.length > 0,
-      )
-      .map((item) => item.id)
+    selectedPermissionIds.value = getSelectedLeafPermissionIds(
+      result.data.children,
+    )
+    assignRolePermissionDrawerVisible.value = true
   } else {
     ElMessage.error('获取角色权限失败')
+  }
+}
+
+const handleAssignRolePermissions = async () => {
+  const checkedKeys = assignRolePermissionTreeRef.value.getCheckedKeys()
+  const halfCheckedKeys = assignRolePermissionTreeRef.value.getHalfCheckedKeys()
+  const selectedPermissionIds = _.uniq([...checkedKeys, ...halfCheckedKeys])
+  const result: ResponseData = await reqAssignRolePermissions({
+    roleId: saveOrUpdateRoleData.value.id!,
+    permissionIdList: selectedPermissionIds,
+  })
+  if (result.code === USER_SUCCESS_CODE) {
+    ElMessage.success('分配角色权限成功')
+    assignRolePermissionDrawerVisible.value = false
+  } else {
+    ElMessage.error('分配角色权限失败')
   }
 }
 </script>
