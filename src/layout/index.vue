@@ -53,7 +53,7 @@ export default {
 .layout_container {
   width: 100%;
   height: 100vh;
-  background: red;
+
   .layout_slider {
     width: $base-menu-width;
     height: 100vh;
@@ -71,7 +71,7 @@ export default {
     position: fixed;
     width: calc(100% - #{$base-menu-width});
     height: $base-tabbar-height;
-    background: $base-tabbar-background;
+
     top: 0;
     left: $base-menu-width;
     transition: all 0.3s;
@@ -84,7 +84,7 @@ export default {
     position: absolute;
     width: calc(100% - #{$base-menu-width});
     height: calc(100vh - #{$base-tabbar-height});
-    background: $base-main-background;
+
     top: $base-tabbar-height;
     left: $base-menu-width;
     overflow: auto;
