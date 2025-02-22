@@ -2,12 +2,24 @@
   <div class="container">
     <div class="screen" ref="screenRef">
       <Top />
+      <div class="main">
+        <div class="left">
+          <Tourist class="tourist" />
+          <Sex class="sex" />
+          <Age class="age" />
+        </div>
+        <div class="middle">中间</div>
+        <div class="right">右边</div>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+import Age from '@/views/screen/components/age/index.vue'
+import Sex from '@/views/screen/components/sex/index.vue'
 import Top from '@/views/screen/components/top/index.vue'
+import Tourist from '@/views/screen/components/tourist/index.vue'
 import { onMounted, ref } from 'vue'
 
 const calcScale = (w: number = 1920, h: number = 1080) => {
@@ -41,7 +53,40 @@ window.onresize = () => {
     top: 50%;
     transform: translate(-50%, -50%);
     transform-origin: left top;
-    background-color: red;
+
+    .main {
+      width: 100%;
+      height: 100%;
+      display: flex;
+
+      .left {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+
+        .tourist {
+          flex: 1;
+        }
+
+        .sex {
+          flex: 1;
+        }
+
+        .age {
+          flex: 1;
+        }
+      }
+
+      .middle {
+        flex: 2;
+        background-color: blueviolet;
+      }
+
+      .right {
+        flex: 1;
+        background-color: chartreuse;
+      }
+    }
   }
 }
 </style>
