@@ -8,7 +8,10 @@
           <Sex class="sex" />
           <Age class="age" />
         </div>
-        <div class="middle">中间</div>
+        <div class="middle">
+          <Map class="map" />
+          <Line class="line" />
+        </div>
         <div class="right">右边</div>
       </div>
     </div>
@@ -17,6 +20,8 @@
 
 <script lang="ts" setup>
 import Age from '@/views/screen/components/age/index.vue'
+import Line from '@/views/screen/components/line/index.vue'
+import Map from '@/views/screen/components/map/index.vue'
 import Sex from '@/views/screen/components/sex/index.vue'
 import Top from '@/views/screen/components/top/index.vue'
 import Tourist from '@/views/screen/components/tourist/index.vue'
@@ -79,7 +84,16 @@ window.onresize = () => {
 
       .middle {
         flex: 2;
-        background-color: blueviolet;
+        display: flex;
+        flex-direction: column;
+
+        .map {
+          flex: 3;
+        }
+
+        .line {
+          flex: 1;
+        }
       }
 
       .right {
