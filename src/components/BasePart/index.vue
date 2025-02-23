@@ -41,7 +41,7 @@ export default {
     flex-direction: column;
     .title {
       color: white;
-      font-size: 30px;
+      font-size: 24px;
     }
 
     .title-bg {

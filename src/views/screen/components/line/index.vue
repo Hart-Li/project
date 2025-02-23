@@ -21,12 +21,6 @@ onMounted(() => {
     tooltip: {
       trigger: 'axis',
     },
-    legend: {
-      data: ['游客数量'],
-      textStyle: {
-        color: '#fff',
-      },
-    },
     xAxis: {
       type: 'category',
       data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
