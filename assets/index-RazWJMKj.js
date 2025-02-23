@@ -1,0 +1,1 @@
+import{K as r}from"./index-CDtMGLGq.js";const d=(e,a)=>r.get(`/admin/product/baseTrademark/${e}/${a}`),s=e=>e.id?r.put("/admin/product/baseTrademark/update",e):r.post("/admin/product/baseTrademark/save",e),m=e=>r.delete(`/admin/product/baseTrademark/remove/${e}`),o=()=>r.get("/admin/product/baseTrademark/getTrademarkList");export{s as a,o as b,d as g,m as r};
