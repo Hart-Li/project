@@ -25,7 +25,11 @@
       </el-form>
     </el-card>
     <el-card shadow="always">
-      <el-button type="primary" @click="handleShowAddDrawer">
+      <el-button
+        type="primary"
+        @click="handleShowAddDrawer"
+        v-has="`btn.User.add`"
+      >
         添加用户
       </el-button>
       <el-button type="danger" @click="handleBatchDeleteUser">
@@ -431,7 +435,7 @@ const handleAssignRolesDrawerClose = () => {
 }
 
 const assignUserRoles = async () => {
-  let newRoleIds = assignRoles.value.map((item) => item.id)
+  let newRoleIds = assignRoles.value.map((item) => item.id!)
   let result: ResponseData = await reqAssignUserRoles({
     userId: saveOrUpdateUserData.value.id,
     roleIdList: newRoleIds,

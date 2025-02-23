@@ -286,7 +286,7 @@ const getSelectedLeafPermissionIds = (permissions: PermissionData[]) => {
   const selectedLeafPermissionIds: string[] = []
   permissions.forEach((item) => {
     if (item.select && (!item.children || item.children.length == 0)) {
-      selectedLeafPermissionIds.push(item.id)
+      selectedLeafPermissionIds.push(item.id as string)
     }
     if (item.children && item.children.length > 0) {
       selectedLeafPermissionIds.push(

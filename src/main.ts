@@ -9,6 +9,7 @@ import 'element-plus/theme-chalk/dark/css-vars.css'
 import 'nprogress/nprogress.css'
 import 'virtual:svg-icons-register'
 import globalComponents from './components'
+import { isHasButton } from './directive/has'
 import './permission'
 import router from './router'
 import pinia from './store'
@@ -20,4 +21,5 @@ app.use(ElementPlus, {
 app.use(globalComponents)
 app.use(pinia)
 app.use(router)
+isHasButton(app)
 app.mount('#app')

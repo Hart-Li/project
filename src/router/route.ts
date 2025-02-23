@@ -2,7 +2,7 @@ export const constantRoute = [
   {
     path: '/login',
     component: () => import('@/views/login/index.vue'),
-    name: 'login',
+    name: 'Login',
     meta: {
       title: '登录',
       hidden: true,
@@ -11,7 +11,7 @@ export const constantRoute = [
   {
     path: '/',
     component: () => import('@/layout/index.vue'),
-    name: 'layout',
+    name: 'Layout',
     meta: {
       title: '',
       icon: '',
@@ -21,7 +21,7 @@ export const constantRoute = [
       {
         path: '/home',
         component: () => import('@/views/home/index.vue'),
-        name: 'home',
+        name: 'Home',
         meta: {
           title: '首页',
           icon: 'HomeFilled',
@@ -41,16 +41,19 @@ export const constantRoute = [
   {
     path: '/screen',
     component: () => import('@/views/screen/index.vue'),
-    name: 'screen',
+    name: 'Screen',
     meta: {
       title: '数据大屏',
       icon: 'Platform',
     },
   },
+]
+
+export const dynamicRoutes = [
   {
     path: '/acl',
     component: () => import('@/layout/index.vue'),
-    name: 'acl',
+    name: 'Acl',
     meta: {
       title: '系统管理',
       icon: 'Setting',
@@ -60,7 +63,7 @@ export const constantRoute = [
       {
         path: '/acl/user',
         component: () => import('@/views/acl/user/index.vue'),
-        name: 'acl-user',
+        name: 'User',
         meta: {
           title: '用户管理',
           icon: 'User',
@@ -69,7 +72,7 @@ export const constantRoute = [
       {
         path: '/acl/role',
         component: () => import('@/views/acl/role/index.vue'),
-        name: 'acl-role',
+        name: 'Role',
         meta: {
           title: '角色管理',
           icon: 'Avatar',
@@ -78,7 +81,7 @@ export const constantRoute = [
       {
         path: '/acl/permission',
         component: () => import('@/views/acl/permission/index.vue'),
-        name: 'acl-permission',
+        name: 'Permission',
         meta: {
           title: '权限管理',
           icon: 'Lock',
@@ -89,7 +92,7 @@ export const constantRoute = [
   {
     path: '/product',
     component: () => import('@/layout/index.vue'),
-    name: 'product',
+    name: 'Product',
     meta: {
       title: '商品管理',
       icon: 'Goods',
@@ -99,7 +102,7 @@ export const constantRoute = [
       {
         path: '/product/trademark',
         component: () => import('@/views/product/trademark/index.vue'),
-        name: 'product-trademark',
+        name: 'Trademark',
         meta: {
           title: '品牌管理',
           icon: 'ShoppingCart',
@@ -108,7 +111,7 @@ export const constantRoute = [
       {
         path: '/product/attr',
         component: () => import('@/views/product/attr/index.vue'),
-        name: 'product-attr',
+        name: 'Attr',
         meta: {
           title: '属性管理',
           icon: 'Operation',
@@ -117,7 +120,7 @@ export const constantRoute = [
       {
         path: '/product/spu',
         component: () => import('@/views/product/spu/index.vue'),
-        name: 'product-spu',
+        name: 'Spu',
         meta: {
           title: 'SPU管理',
           icon: 'GoodsFilled',
@@ -126,7 +129,7 @@ export const constantRoute = [
       {
         path: '/product/sku',
         component: () => import('@/views/product/sku/index.vue'),
-        name: 'product-sku',
+        name: 'Sku',
         meta: {
           title: 'SKU管理',
           icon: 'ShoppingBag',
@@ -134,14 +137,15 @@ export const constantRoute = [
       },
     ],
   },
-  {
-    path: '/:pathMatch(.*)*',
-    redirect: '/404',
-    name: 'any',
-    meta: {
-      title: '任意路由',
-      hidden: true,
-      icon: 'Message',
-    },
-  },
 ]
+
+export const anyRoute = {
+  path: '/:pathMatch(.*)*',
+  redirect: '/404',
+  name: 'Any',
+  meta: {
+    title: '任意路由',
+    hidden: true,
+    icon: 'Message',
+  },
+}

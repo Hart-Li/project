@@ -6,10 +6,29 @@ import {
   LoginResponseData,
   UserInfoResponseData,
 } from '@/api/user/type'
-import { constantRoute } from '@/router/route'
+import { anyRoute, constantRoute, dynamicRoutes } from '@/router/route'
 import { GET_TOKEN, REMOVE_TOKEN, SET_TOKEN } from '@/utils/token'
+import _ from 'lodash'
 import { defineStore } from 'pinia'
+import { useRouter } from 'vue-router'
 import type { UserState } from './types/type'
+
+const filterDynamicRoutes = (dynamicRoutes: any, userRoutes: string[]) => {
+  const res = dynamicRoutes.filter((route: any) => {
+    if (userRoutes.includes(route.name as string)) {
+      if (route.children) {
+        route.children = filterDynamicRoutes(
+          _.cloneDeep(route.children),
+          userRoutes,
+        )
+      }
+      return true
+    }
+    return false
+  })
+  return res
+}
+
 const useUserStore = defineStore('User', {
   state: (): UserState => {
     return {
@@ -18,6 +37,7 @@ const useUserStore = defineStore('User', {
       menuRoutes: constantRoute,
       username: '',
       avatar: '',
+      userBtns: [],
     }
   },
   actions: {
@@ -36,11 +56,24 @@ const useUserStore = defineStore('User', {
       }
     },
     async getUserInfo() {
+      const router = useRouter()
       const result: ResponseData<UserInfoResponseData> = await getUserInfo()
       if (result.code === USER_SUCCESS_CODE) {
         this.username = result.data.name || ''
         this.avatar = result.data.avatar || ''
-
+        // 过滤动态路由
+        const userDynamicRoutes = filterDynamicRoutes(
+          dynamicRoutes,
+          result.data.routes || [],
+        )
+        // 合并动态路由 & 添加到路由表
+        const userAllRoutes = [...constantRoute, ...userDynamicRoutes, anyRoute]
+        this.menuRoutes = userAllRoutes
+        this.resetRouter()
+        userAllRoutes.forEach((item) => {
+          router.addRoute(item)
+        })
+        this.userBtns = result.data.buttons
         return 'ok'
       } else {
         return Promise.reject(new Error(result.message))
@@ -57,10 +90,27 @@ const useUserStore = defineStore('User', {
     },
     resetUser() {
       this.token = ''
-      this.username = ''
       this.avatar = ''
+      this.username = ''
       // 删除本地存储的 token
       REMOVE_TOKEN()
+    },
+    resetRouter() {
+      // router
+      //   .getRoutes()
+      //   .filter((route: any) => {
+      //     const constantRouteNames = constantRoute.map((item) => item.name)
+      //     if (
+      //       anyRoute.name === route.name ||
+      //       constantRouteNames.includes(route.name)
+      //     ) {
+      //       return false
+      //     }
+      //     return true
+      //   })
+      //   .forEach((route: any) => {
+      //     router.removeRoute(route.name)
+      //   })
     },
   },
   getters: {},
