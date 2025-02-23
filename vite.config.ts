@@ -7,6 +7,7 @@ import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 export default defineConfig(({ command, mode }) => {
   const env = loadEnv(mode, process.cwd())
   return {
+    base: '/project/',
     plugins: [
       vue(),
       createSvgIconsPlugin({
